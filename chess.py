@@ -1,67 +1,94 @@
-import requests, pywikibot, re, json, urllib.parse
+import pywikibot, re, json, urllib.parse, requests
 
-repo = pywikibot.Site("wikidata", "wikidata").data_repository()
-file = open("chess-out.txt","w", encoding="utf-8")
-didntfound = open("chess-out-didntfound.txt","w", encoding="utf-8")
+repository = pywikibot.Site("wikidata", "wikidata").data_repository()
+file = open("chess-elo-item-rating-output.txt","w", encoding="utf-8")
+didntfind = open("chess-didntfind-fideid-output.txt","w", encoding="utf-8")
 
-####################################################################json
+####################################################################querying wd, output in json
 
-QUERY = """SELECT ?item ?value
+queryString = """SELECT ?item ?value
 WHERE
 {
 	?item wdt:P1440 ?value .
 }
 """
 
-query2 = urllib.parse.quote(QUERY)
+wdQuery = urllib.parse.quote(queryString)
+wdQueryUrl = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wdQuery)
+url = requests.get(wdQueryUrl)
+json_data = json.loads(url.text)
+itemList = [[data["item"]["value"].replace("http://www.wikidata.org/entity/",""),data["value"]["value"]] for data in json_data["results"]["bindings"]]
 
-url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(query2)
-url2= requests.get(url)
+####################################################################get input from csv
 
-json_data = json.loads(url2.text)
+fideRatingFile = open("standard_apr13.csv", "r", encoding="utf-8").read()#CHANGE THIS ON NEW RUN
+fideRatingFile = fideRatingFile.split("\n")
+fideRatingFile2 = [f for f in fideRatingFile if len(f)>0]
+fideRatingFile3 = [f.split(",") for f in fideRatingFile2]
+fideRatings = {f[0]:f[1] for f in fideRatingFile3}
 
-itemlist = [[data["item"]["value"].replace("http://www.wikidata.org/entity/",""),data["value"]["value"]] for data in json_data["results"]["bindings"]]
+####################################################################writing to wd
 
-
-####################################################################tsv
-fideratingfile = open("standard_mar16frl_xml.csv", "r", encoding="utf-8").read()
-
-fideratingfile = fideratingfile.split("\n")
-
-fideratingfile2 = [f for f in fideratingfile if len(f)>0]
-fideratingfile3 = [f.split("\t") for f in fideratingfile2]
-fideratings = {f[0]:f[1] for f in fideratingfile3}
-
-####################################################################tsv
-
-for player in itemlist:
-	wditem = player[0]
-	fideid = player[1]
+for player in itemList:
+	wdItem = player[0]
+	fideId = player[1]
 	
-	if fideid not in fideratings:
-		pywikibot.output("did not found id: " +fideid+" from WD item: " + wditem)
-		didntfound.write("{}\t{}\",\n".format(wditem,fideid))
+	if fideId not in fideRatings:
+		pywikibot.output("Did not find fide id: " +fideId+" for WD item: " + wdItem)
+		didntfind.write("{}\t{}\",\n".format(wdItem,fideId))
 		continue
 		
-	rating = fideratings[fideid]
-	outputstring = "\"{}\":\"{}\",".format(wditem,rating)
-	print("Setting P1087 claim to "+wditem+", value of "+rating)
-	playerItem = pywikibot.ItemPage(repo, wditem)
-	eloClaim = pywikibot.Claim(repo, u"P1087") # property "elo" to be found at https://www.wikidata.org/wiki/Property:1087
+	rating = fideRatings[fideId]
+	
+####################################################################writing claim
+
+	print("Setting P1087 claim to "+wdItem+", value of "+ rating +".")
+	playerItem = pywikibot.ItemPage(repository, wdItem)
+	eloClaim = pywikibot.Claim(repository, u"P1087")
 	eloClaim.setTarget(pywikibot.WbQuantity(rating))
 	playerItem.addClaim(eloClaim)
-	qualifier = pywikibot.Claim(repo, u"P585") # property "date" to be found at https://www.wikidata.org/wiki/Property:P585
-	date = pywikibot.WbTime(site=repo, year=2016, month=3)
-	print("Setting qualifier: date 3.2016")
-	qualifier.setTarget(date)
-	eloClaim.addQualifier(qualifier)
-	statedin = pywikibot.Claim(repo, u"P248") # property "URL (reference)" to be found at https://www.wikidata.org/wiki/Property:P854
-	fideweb = pywikibot.ItemPage(repo, u"Q27038151") # item "ratings.fide.com" to be found at https://www.wikidata.org/wiki/Q27038151
-	statedin.setTarget(fideweb)
-	print("Setting qualifier: stated in ratings.fide.com")
-	retrieved = pywikibot.Claim(repo, u"P813") # property "retrieved" to be found at https://www.wikidata.org/wiki/Property:P813
-	dateofretrieval = pywikibot.WbTime(site=repo, year=2016, month=9, day=21)
-	print("Setting qualifier: retrieved on 21.9.2016")
-	retrieved.setTarget(dateofretrieval)
-	eloClaim.addSources([statedin, retrieved])
-print("Done")
+	
+####################################################################writing qualifier - date
+
+	print("Setting qualifier - date: april 2013.")#CHANGE THIS ON NEW RUN
+	dateQualifier = pywikibot.Claim(repository, u"P585")
+	date = pywikibot.WbTime(site=repository, year=2013, month=3)#CHANGE THIS ON NEW RUN
+	dateQualifier.setTarget(date)
+	eloClaim.addQualifier(dateQualifier)
+	
+####################################################################writing sources - stated in + date of retrieval and FIDE ID	
+
+	print("Setting source - stated in ratings.fide.com.")
+	statedInProperty = pywikibot.Claim(repository, u"P248") 
+	fideWeb = pywikibot.ItemPage(repository, u"Q27038151")
+	statedInProperty.setTarget(fideWeb)
+	print("Setting source - retrieved on 21.9.2016.")
+	retrievedProperty = pywikibot.Claim(repository, u"P813")
+	dateQualifier = pywikibot.WbTime(site=repository, year=2016, month=9, day=21)
+	retrievedProperty.setTarget(dateQualifier)
+	print("Setting source - fide id: " + fideId +".")
+	fideIdProperty = pywikibot.Claim(repository, u"P1440") 
+	fideIdProperty.setTarget(fideId)
+	eloClaim.addSources([statedInProperty, retrievedProperty, fideIdProperty])
+	print("Writing to "+wdItem+ " is done.")
+print("All is done.")
+
+####################################################################
+# jan		1
+# feb		2
+# mar		3
+# apr		4
+# may		5
+# jun		6
+# jul		7
+# aug		8
+# sep		9
+# oct		10
+# nov		11
+# dec		12
+# property P813 "retrieved", to be found at https://www.wikidata.org/wiki/Property:P813
+# property P248 "stated in", to be found at https://www.wikidata.org/wiki/Property:P248
+# property P585 "date" to be found at https://www.wikidata.org/wiki/Property:P585
+# property P1087 "elo" to be found at https://www.wikidata.org/wiki/Property:1087
+# property P1440 "fide id", to be found at https://www.wikidata.org/wiki/Property:P1440
+# item "ratings.fide.com" to be found at https://www.wikidata.org/wiki/Q27038151
