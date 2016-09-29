@@ -8,6 +8,7 @@ Credits for major parts of the script go to [Edgars2007](https://www.wikidata.or
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO:
-* script should check if the exact statement (rating value and date) does exist, if it does, it
-should skip the item to prevent duplicate values
+* add counter of how many items already written
+* figure a way to "pause/resume" the script
+* script should check if the exact statement (rating value and date) does exist, if it does, it should skip the item to prevent duplicate values
 * files opened by the script should be closed
