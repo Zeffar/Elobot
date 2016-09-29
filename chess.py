@@ -2,7 +2,7 @@ import pywikibot, re, json, urllib.parse, requests
 
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 file = open("chess-elo-item-rating-output.txt","w", encoding="utf-8")
-didntfind = open("chess-didntfind-fideid-output.txt","w", encoding="utf-8")
+didntFind = open("chess-didntfind-fideid-output.txt","w", encoding="utf-8")
 
 ####################################################################querying wd, output in json
 
@@ -35,11 +35,13 @@ for player in itemList:
 	
 	if fideId not in fideRatings:
 		pywikibot.output("Did not find fide id: " +fideId+" for WD item: " + wdItem)
-		didntfind.write("{}\t{}\",\n".format(wdItem,fideId))
+		print("_______________________________________________\n")
+		didntFind.write("{}\t{}\",\n".format(wdItem,fideId))
 		continue
 		
 	rating = fideRatings[fideId]
-	
+	outputstring = "Item:{},FIDE ID:{},Rating:{}".format(wditem,fideid,rating)
+	file.write(outputstring+'\n')
 ####################################################################writing claim
 
 	print("Setting P1087 claim to "+wdItem+", value of "+ rating +".")
@@ -50,27 +52,29 @@ for player in itemList:
 	
 ####################################################################writing qualifier - date
 
-	print("Setting qualifier - date: april 2013.")#CHANGE THIS ON NEW RUN
+	print("	Setting qualifier - date: april 2013.")#CHANGE THIS ON NEW RUN
 	dateQualifier = pywikibot.Claim(repository, u"P585")
-	date = pywikibot.WbTime(site=repository, year=2013, month=3)#CHANGE THIS ON NEW RUN
+	date = pywikibot.WbTime(site=repository, year=2013, month=4)#CHANGE THIS ON NEW RUN
 	dateQualifier.setTarget(date)
 	eloClaim.addQualifier(dateQualifier)
 	
 ####################################################################writing sources - stated in + date of retrieval and FIDE ID	
 
-	print("Setting source - stated in ratings.fide.com.")
+	print("		Setting source - stated in ratings.fide.com.")
 	statedInProperty = pywikibot.Claim(repository, u"P248") 
 	fideWeb = pywikibot.ItemPage(repository, u"Q27038151")
 	statedInProperty.setTarget(fideWeb)
-	print("Setting source - retrieved on 21.9.2016.")
+	print("		Setting source - retrieved on 21.9.2016.")
 	retrievedProperty = pywikibot.Claim(repository, u"P813")
 	dateQualifier = pywikibot.WbTime(site=repository, year=2016, month=9, day=21)
 	retrievedProperty.setTarget(dateQualifier)
-	print("Setting source - fide id: " + fideId +".")
+	print("		Setting source - fide id: " + fideId +".")
 	fideIdProperty = pywikibot.Claim(repository, u"P1440") 
 	fideIdProperty.setTarget(fideId)
 	eloClaim.addSources([statedInProperty, retrievedProperty, fideIdProperty])
 	print("Writing to "+wdItem+ " is done.")
+	print("_______________________________________________\n")
+	
 print("All is done.")
 
 ####################################################################
