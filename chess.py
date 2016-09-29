@@ -36,12 +36,11 @@ for player in itemList:
 	if fideId not in fideRatings:
 		pywikibot.output("Did not find fide id: " +fideId+" for WD item: " + wdItem)
 		print("_______________________________________________\n")
-		didntFind.write("{}\t{}\",\n".format(wdItem,fideId))
+		didntFind.write("Item:{},FIDE ID:{}\n".format(wdItem,fideId))
 		continue
 		
 	rating = fideRatings[fideId]
-	outputstring = "Item:{},FIDE ID:{},Rating:{}".format(wditem,fideid,rating)
-	file.write(outputstring+'\n')
+	file.write("Item:{},FIDE ID:{},Rating:{}\n".format(wdItem,fideId,rating))
 ####################################################################writing claim
 
 	print("Setting P1087 claim to "+wdItem+", value of "+ rating +".")
