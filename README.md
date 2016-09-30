@@ -8,9 +8,7 @@ Credits for major parts of the script go to [Edgars2007](https://www.wikidata.or
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO:
-* add counter of how many items already written
-* figure a way to "pause/resume" the script
 * figure a way to continue when the `pywikibot.exceptions.NoPage: Page [[wikidata:Q11814034]] doesn't exist.
-<class 'pywikibot.exceptions.NoPage'>` error happens
+<class 'pywikibot.exceptions.NoPage'>` error happens - howabout `try: except pywikibot.NoPage: player.next()`
 * script should check if the exact statement (rating value and date) does exist, if it does, it should skip the item to prevent duplicate values
-* files opened by the script should be closed
+* figure a way to "pause/resume" the script
