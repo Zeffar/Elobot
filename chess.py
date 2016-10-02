@@ -9,10 +9,14 @@ month_of_rating = 4 #CHANGE ACCORDINGLY
 year_of_retrieval = 2016 #CHANGE ACCORDINGLY
 month_of_retrieval = 9 #CHANGE ACCORDINGLY
 day_of_retrieval = 21 #CHANGE ACCORDINGLY
+date_property = u"P585"
+date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
+date_claim = pywikibot.Claim(repository, date_property)
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 stated_in_property = u"P248"
 stated_in_claim = pywikibot.Claim(repository, stated_in_property)
 retrieved_on_property = u"P813"
+retrieved_on_value = pywikibot.WbTime(year = year_of_retrieval, month = month_of_retrieval, day = day_of_retrieval)
 retrieved_on_claim = pywikibot.Claim(repository, retrieved_on_property)
 fide_web_item = u"Q27038151"
 fide_web_item_page = pywikibot.ItemPage(repository, fide_web_item)
@@ -20,17 +24,9 @@ elo_property = u"P1087"
 elo_claim = pywikibot.Claim(repository, elo_property)
 fide_id_property = u"P1440"
 fide_id_claim = pywikibot.Claim(repository, fide_id_property) 
-date_property = u"P585"
-date_claim = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
-date_qualifier = pywikibot.WbTime(year = year_of_retrieval, month = month_of_retrieval, day = day_of_retrieval)
 horizontal_line = "_______________________________________________\n"
 ####################################################################query wd, output in json
-query_string = """SELECT ?item ?value
-WHERE
-{
-?item wdt:P1440 ?value .
-}
-"""
+query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
 wd_query = urllib.parse.quote(query_string)
 wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
 url = requests.get(wd_query_url)
@@ -60,13 +56,13 @@ for player in item_list:
 		player_item.addClaim(elo_claim)
 ####################################################################write qualifier - date
 		print("	Setting qualifier - date property: year: {}, month: {}.".format(year_of_rating, month_of_rating))
-		date_qualifier.setTarget(date_claim)
-		elo_claim.addQualifier(date_qualifier)
+		date_claim.setTarget(date_value)
+		elo_claim.addQualifier(date_claim)
 ####################################################################write sources - stated in + date_property of retrieval and FIDE ID	
 		print("		Setting source - stated in {}.".format(fide_web_item))
 		stated_in_claim.setTarget(fide_web_item_page)
 		print("		Setting source - retrieved on {}, month: {}.".format(year_of_retrieval, month_of_retrieval))
-		retrieved_on_claim.setTarget(retrieved_on_property)
+		retrieved_on_claim.setTarget(retrieved_on_value)
 		print("		Setting source - fide id: {}.".format(fide_id_property))
 		fide_id_claim.setTarget(fide_id_property)
 		elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
