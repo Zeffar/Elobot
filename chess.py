@@ -53,27 +53,26 @@ for player in item_list:
 			continue
 		rating = fide_ratings[fide_id]
 ####################################################################write claims
-		print(("Writing statement number: {}").format(counter))
-		print(("Setting P1087 claim to {}, value of {}.").format(wd_item,rating))
+		print("Writing statement number: {}".format(counter))
+		print("Setting P1087 claim to {}, value of {}.".format(wd_item,rating))
 		player_item = pywikibot.ItemPage(repository, wd_item)
 		elo_claim.setTarget(pywikibot.WbQuantity(rating))
 		player_item.addClaim(elo_claim)
 ####################################################################write qualifier - date
-		print(("	Setting qualifier - date property: year: {}, month: {}.").format(year_of_rating, month_of_rating))
+		print("	Setting qualifier - date property: year: {}, month: {}.".format(year_of_rating, month_of_rating))
 		date_qualifier.setTarget(date_claim)
 		elo_claim.addQualifier(date_qualifier)
 ####################################################################write sources - stated in + date_property of retrieval and FIDE ID	
 		print("		Setting source - stated in {}.".format(fide_web_item))
 		stated_in_claim.setTarget(fide_web_item_page)
-		print(("		Setting source - retrieved on {}, month: {}.").format(year_of_retrieval, month_of_retrieval))
+		print("		Setting source - retrieved on {}, month: {}.".format(year_of_retrieval, month_of_retrieval))
 		retrieved_on_claim.setTarget(retrieved_on_property)
-		print(("		Setting source - fide id: {}.").format(fide_id_property))
+		print("		Setting source - fide id: {}.".format(fide_id_property))
 		fide_id_claim.setTarget(fide_id_property)
 		elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
-		print(("Writing to {} is done.\n{}".format(wd_item, horizontal_line))
-		found_output_file.write(("Item: {},FIDE ID: {},Rating: {}.\n").format(wd_item,fide_id,rating))
-		counter = counter + 1
-		time.sleep(60)
+		print("Writing to {} is done.\n{}".format(wd_item, horizontal_line))
+		found_output_file.write("Item: {},FIDE ID: {},Rating: {}.\n".format(wd_item,fide_id,rating))
+		counter += 1
 	except pywikibot.NoPage:
 		print(("{} does not exist. Skipping.\n{}").format(wd_item, horizontal_line))
 		player.next()
