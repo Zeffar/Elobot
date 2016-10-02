@@ -7,8 +7,10 @@ Credits for major parts of the script go to [Edgars2007](https://www.wikidata.or
 
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
-##TODO:
-* figure a way to continue when the `pywikibot.exceptions.NoPage: Page [[wikidata:Q11814034]] doesn't exist.
-<class 'pywikibot.exceptions.NoPage'>` error happens - howabout `try: except pywikibot.NoPage: player.next()`
+##TODO high priority:
 * script should check if the exact statement (rating value and date) does exist, if it does, it should skip the item to prevent duplicate values
+* use sys.argv[1] for csv input file and other variables so I dont have to edit the script everytime
+
+##TODO high priority:
+* rewrite the querying part and csv parsing part
 * figure a way to "pause/resume" the script
