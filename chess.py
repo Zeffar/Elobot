@@ -1,5 +1,6 @@
-import pywikibot, re, json, urllib.parse, requests, time
+import pywikibot, re, json, urllib.parse, requests
 ####################################################################assign variables
+repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 year_of_rating = 2014 #CHANGE ACCORDINGLY
 month_of_rating = 4 #CHANGE ACCORDINGLY
 year_of_retrieval = 2016 #CHANGE ACCORDINGLY
@@ -8,7 +9,6 @@ day_of_retrieval = 21 #CHANGE ACCORDINGLY
 date_property = u"P585"
 date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
 date_claim = pywikibot.Claim(repository, date_property)
-repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 stated_in_property = u"P248"
 stated_in_claim = pywikibot.Claim(repository, stated_in_property)
 retrieved_on_property = u"P813"
@@ -22,7 +22,7 @@ fide_id_property = u"P1440"
 fide_id_claim = pywikibot.Claim(repository, fide_id_property) 
 horizontal_line = "_______________________________________________\n"
 ####################################################################open external files
-with ("standard_apr14.csv", "r", encoding="utf-8") as fide_csv_rating_file:#CHANGE ACCORDINGLY
+with open("standard_apr14.csv", "r", encoding="utf-8") as fide_csv_rating_file:#CHANGE ACCORDINGLY
 	with open("chess-elo-item-rating-output.txt","w", encoding="utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt","w", encoding="utf-8") as didnt_find_output_file:
 ####################################################################query wd, output in json
 		query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
@@ -32,7 +32,7 @@ with ("standard_apr14.csv", "r", encoding="utf-8") as fide_csv_rating_file:#CHAN
 		json_data = json.loads(url.text)
 		item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/",""),data["value"]["value"]] for data in json_data["results"]["bindings"]]
 ####################################################################parse csv input
-		fide_rating_file = fide_rating_file.split("\n")
+		fide_rating_file = fide_csv_rating_file.split("\n")
 		fide_rating_file2 = [f for f in fide_rating_file if len(f)>0]
 		fide_rating_file3 = [f.split(",") for f in fide_rating_file2]
 		fide_ratings = {f[0]:f[1] for f in fide_rating_file3}
