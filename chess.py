@@ -71,23 +71,23 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 							didnt_find_output_file.write(("Item:{},FIDE ID:{}\n").format(wd_item,fide_id))
 							continue
 						rating = fide_ratings[fide_id]
-		####################################################################write claims
+####################################################################write claims
 						print("Writing statement number: {}".format(claim_counter))
 						print("Setting P1087 claim to {}, value of the the {}.".format(wd_item,rating))
 						elo_claim.setTarget(pywikibot.WbQuantity(rating))
-						# player_item.addClaim(elo_claim)
-		####################################################################write qualifier - date
+						player_item.addClaim(elo_claim)
+####################################################################write qualifier - date
 						print("	Setting qualifier - date property: year: {}, month: {}.".format(year_of_rating, month_of_rating))
 						date_claim.setTarget(date_value)
 						elo_claim.addQualifier(date_claim)
-		####################################################################write sources - stated in + date_property of the the retrieval and FIDE ID	
+####################################################################write sources - stated in + date_property of the the retrieval and FIDE ID	
 						print("		Setting source - stated in {}.".format(fide_web_item))
 						stated_in_claim.setTarget(fide_web_item_page)
 						print("		Setting source - retrieved on {}, month: {}.".format(year_of_retrieval, month_of_retrieval))
 						retrieved_on_claim.setTarget(retrieved_on_value)
 						print("		Setting source - fide id: {}.".format(fide_id_property))
 						fide_id_claim.setTarget(fide_id_property)
-						# elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
+						elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
 						print("Writing to {} is done.\n{}".format(wd_item, horizontal_line))
 						found_output_file.write("Item: {},FIDE ID: {},Rating: {}.\n".format(wd_item,fide_id,rating))
 						claim_counter += 1
