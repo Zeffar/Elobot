@@ -1,7 +1,7 @@
 import pywikibot, re, json, urllib.parse, requests, time, winsound
 # intro, assign variables
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
-print("EloBot script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.")
+print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.")
 time.sleep(5)
 input_csv_file = input("Give the name of the input csv file, for ex \"standard_apr14.csv\": ") # for example standard_apr14.csv
 print("The following values must match the input csv file!")
@@ -56,10 +56,10 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				for qualifier in claim.qualifiers.get(date_property, []):
 					if qualifier.target_equals(date_value):
 							has_claim_with_this_date = True
-							print("Checking elo claim of the item {}. This elo claim has a qualifier stating date - year {}, month {}.".format(wd_item, year_of_rating, month_of_rating))
+							print("Checking elo claim of the item {}. This elo claim has a qualifier stating date - year {}, month {}.\n".format(wd_item, year_of_rating, month_of_rating))
 							break
 			if has_claim_with_this_date:
-				print("Checking elo claim of the item {}. This elo claim does not have a qualifier stating date - year {}, month {}.".format(wd_item, year_of_rating, month_of_rating))
+				print("Checking elo claim of the item {}. This elo claim does not have a qualifier stating date - year {}, month {}.\n".format(wd_item, year_of_rating, month_of_rating))
 				continue
 			try:
 				if fide_id not in fide_ratings:
