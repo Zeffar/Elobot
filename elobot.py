@@ -28,7 +28,7 @@ fide_id_claim = pywikibot.Claim(repository, fide_id_property)
 horizontal_line = "_______________________________________________\n"
 ####################################################################open external files
 with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
-	with open("chess-elo-item-rating-output.txt","w", encoding="utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt","w", encoding="utf-8") as didnt_find_output_file:
+	with open("elobot-output-written.txt","w", encoding="utf-8") as  found_output_file, open("elobout-output-didntfind-fideid.txt","w", encoding="utf-8") as didnt_find_output_file:
 ####################################################################query wd, output in json
 		print("Processing {}, going to check and possibly write claims date qualifier - year {}, month {}, and sourced as retrieved on - year {}, month {}, day {}.\nSleeping 10 seconds.".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval))
 		time.sleep(10)
