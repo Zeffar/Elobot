@@ -3,7 +3,7 @@ Python script written for importing [elo ratings](https://en.wikipedia.org/wiki/
 
 Source of input data is [FIDE](http://ratings.fide.com/).
 
-Credits for major parts of the script go to [Edgars2007](https://www.wikidata.org/wiki/User:Edgars2007) and [Tobias1984](https://www.wikidata.org/wiki/User:Tobias1984).
+Credits for major parts of the script go to [Edgars2007](https://www.wikidata.org/wiki/User:Edgars2007), [Tobias1984](https://www.wikidata.org/wiki/User:Tobias1984) and [Matěj Suchánek](https://www.wikidata.org/wiki/User:Matěj_Suchánek).
 
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
