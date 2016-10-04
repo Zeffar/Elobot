@@ -6,11 +6,11 @@ time.sleep(5)
 input_csv_file = input("Give the name of the input csv file, for ex \"standard_apr14.csv\": ") # for example standard_apr14.csv
 print("The following values must match the input csv file!")
 time.sleep(5)
-year_of_rating = int(input("Give the year of the rating, for ex \"2014\"): "))
-month_of_rating = int(input("Give the month of the rating, for ex \"4 for April\": "))
+year_of_rating = int(input("Give the year of the rating, for ex \"2014\": "))
+month_of_rating = int(input("Give the month of the rating, for ex \"4\" for April: "))
 year_of_retrieval = int(input("Give the year of the retrieval, for ex \"2016\": "))
-month_of_retrieval = int(input("Give the month of the retrieval, for ex \"9 for September\": "))
-day_of_retrieval = int(input("Give the day of the the retrieval, for ex \"21\": "))
+month_of_retrieval = int(input("Give the month of the retrieval, for ex \"9\" for September: "))
+day_of_retrieval = int(input("Give the day of the retrieval, for ex \"21\": "))
 date_property = u"P585"
 date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
 date_claim = pywikibot.Claim(repository, date_property)
@@ -25,12 +25,13 @@ elo_property = u"P1087"
 elo_claim = pywikibot.Claim(repository, elo_property)
 fide_id_property = u"P1440"
 fide_id_claim = pywikibot.Claim(repository, fide_id_property) 
-horizontal_line = "_______________________________________________\n"
+horizontal_line = "\n________________________________________________________\n"
 ####################################################################open external files
 with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
-	with open("elobot-output-written.txt","w", encoding="utf-8") as  found_output_file, open("elobout-output-didntfind-fideid.txt","w", encoding="utf-8") as didnt_find_output_file:
+	with open("chess-elo-item-rating-output.txt","w", encoding="utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt","w", encoding="utf-8") as didnt_find_output_file:
 ####################################################################query wd, output in json
-		print("Processing {}, going to check and possibly write claims date qualifier - year {}, month {}, and sourced as retrieved on - year {}, month {}, day {}.\nSleeping 10 seconds.".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval))
+		print("\nProcessing {}, going to check and possibly write claims with date qualifier - year {}, month {}, and sourced as retrieved on - year {}, month {}, day {}.".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval))
+		print("10 seconds until start.")
 		time.sleep(10)
 		query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
 		wd_query = urllib.parse.quote(query_string)
@@ -47,7 +48,6 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 ####################################################################write to wd
 		claim_counter = 1
 		for player in item_list:
-			qualifier_counter = 1
 			has_claim_with_this_date = False
 			wd_item = player[0]
 			fide_id = player[1]
@@ -56,44 +56,41 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 			for claim in player_item.claims.get(elo_property, []):
 				for qualifier in claim.qualifiers.get(date_property, []):
 					if qualifier.target_equals(date_value):
-						for i in range(qualifier_counter):
 							has_claim_with_this_date = True
-							print("Checking elo claim number {} of the the item {}. This elo claim has a qualifier stating date - year {}, month {}.".format(qualifier_counter, wd_item, year_of_rating, month_of_rating))
-							qualifier_counter +=1
+							print("Checking elo claim of the item {}. This elo claim has a qualifier stating date - year {}, month {}.".format(wd_item, year_of_rating, month_of_rating))
 							break
-					else:
-						print("Checking elo claim number {} of the the item {}. This elo claim does not have a qualifier stating date - year {}, month {}.".format(qualifier_counter, wd_item, year_of_rating, month_of_rating))
-						qualifier_counter +=1
-						continue
-					try:
-						if fide_id not in fide_ratings:
-							print(("Did not find fide id: {} for WD item: {}.\n{}").format(fide_id, wd_item, horizontal_line))
-							didnt_find_output_file.write(("Item:{},FIDE ID:{}\n").format(wd_item,fide_id))
-							continue
-						rating = fide_ratings[fide_id]
+			if has_claim_with_this_date:
+				print("Checking elo claim of the item {}. This elo claim does not have a qualifier stating date - year {}, month {}.".format(wd_item, year_of_rating, month_of_rating))
+				continue
+			try:
+				if fide_id not in fide_ratings:
+					print(("{}Did not find fide id {} for item {}.{}").format(horizontal_line, fide_id, wd_item, horizontal_line))
+					didnt_find_output_file.write(("Item:{},FIDE ID:{}\n").format(wd_item,fide_id))
+					continue
+				rating = fide_ratings[fide_id]
 ####################################################################write claims
-						print("Writing statement number: {}".format(claim_counter))
-						print("Setting P1087 claim to {}, value of the the {}.".format(wd_item,rating))
-						elo_claim.setTarget(pywikibot.WbQuantity(rating))
-						player_item.addClaim(elo_claim)
+				print("Writing statement number: {}".format(claim_counter))
+				print("Setting P1087 claim to {}, value of {}.".format(wd_item,rating))
+				elo_claim.setTarget(pywikibot.WbQuantity(rating))
+				player_item.addClaim(elo_claim)
 ####################################################################write qualifier - date
-						print("	Setting qualifier - date property: year: {}, month: {}.".format(year_of_rating, month_of_rating))
-						date_claim.setTarget(date_value)
-						elo_claim.addQualifier(date_claim)
-####################################################################write sources - stated in + date_property of the the retrieval and FIDE ID	
-						print("		Setting source - stated in {}.".format(fide_web_item))
-						stated_in_claim.setTarget(fide_web_item_page)
-						print("		Setting source - retrieved on {}, month: {}.".format(year_of_retrieval, month_of_retrieval))
-						retrieved_on_claim.setTarget(retrieved_on_value)
-						print("		Setting source - fide id: {}.".format(fide_id_property))
-						fide_id_claim.setTarget(fide_id_property)
-						elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
-						print("Writing to {} is done.\n{}".format(wd_item, horizontal_line))
-						found_output_file.write("Item: {},FIDE ID: {},Rating: {}.\n".format(wd_item,fide_id,rating))
-						claim_counter += 1
-					except pywikibot.NoPage:
-						print(("{} does not exist. Skipping.\n{}").format(wd_item, horizontal_line))
-						continue
+				print("	Setting qualifier - date: year {}, month {}.".format(year_of_rating, month_of_rating))
+				date_claim.setTarget(date_value)
+				elo_claim.addQualifier(date_claim)
+####################################################################write sources - stated in + date_property of the retrieval and FIDE ID	
+				print("		Setting source - stated in {}.".format(fide_web_item))
+				stated_in_claim.setTarget(fide_web_item_page)
+				print("		Setting source - retrieved on year {}, month {}, day {}.".format(year_of_retrieval, month_of_retrieval, day_of_retrieval))
+				retrieved_on_claim.setTarget(retrieved_on_value)
+				print("		Setting source - fide id {}.".format(fide_id_property))
+				fide_id_claim.setTarget(fide_id_property)
+				elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
+				print("Writing to {} is done.{}".format(wd_item, horizontal_line))
+				found_output_file.write("Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item,fide_id,rating))
+				claim_counter += 1
+			except pywikibot.NoPage:
+				print(("{} does not exist. Skipping.{}").format(wd_item, horizontal_line))
+				continue
 print(("Wrote {} claims.").format(claim_counter))
 ####################################################################Cheatsheet
 # jan		1
