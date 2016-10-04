@@ -9,8 +9,8 @@ Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO high priority:
 * script should check if the exact statement (rating value and date) does exist, if it does, it should skip the item to prevent duplicate values
-* use sys.argv[1] for csv input file and other variables so I dont have to edit the script everytime
 
 ##TODO low priority:
 * rewrite the querying part and csv parsing part
+* use input() for input files so they are not hardcoded into the script
 * figure a way to "pause/resume" the script
