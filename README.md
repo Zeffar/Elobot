@@ -7,4 +7,3 @@ Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO:
 * rewrite the querying part and csv parsing part
-* figure a way to "pause/resume" the script
