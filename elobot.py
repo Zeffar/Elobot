@@ -4,11 +4,11 @@ start_time = time.time()
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.\n")
 time.sleep(5)
-input_csv_file = input("Give the name of the input csv file, for ex \"standard_apr14.csv\": ") # for example standard_apr14.csv
-print("The following values must match the input csv file!\n")
+input_csv_file = input("Give the name of the input csv file: ") # for example "standard_apr14.csv"
+print("The following values must match the input csv file given above!\n")
 time.sleep(5)
-year_of_rating = int(input("Give the year of the rating, for ex \"2014\": "))
-month_of_rating = int(input("Give the month of the rating, for ex \"4\" for April: "))
+year_of_rating = int(input("Give the year of the rating: ")) # for ex "2014"
+month_of_rating = int(input("Give the month of the rating: ")) # for ex "4" for April
 year_of_retrieval = 2016 # year_of_retrieval = int(input("Give the year of the retrieval, for ex \"2016\": "))
 month_of_retrieval = 9 # month_of_retrieval = int(input("Give the month of the retrieval, for ex \"9\" for September: "))
 day_of_retrieval = 21 # day_of_retrieval = int(input("Give the day of the retrieval, for ex \"21\": "))
@@ -28,7 +28,7 @@ fide_id_property = u"P1440"
 fide_id_claim = pywikibot.Claim(repository, fide_id_property) 
 # open external files
 with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
-	with open("chess-elo-item-rating-output.txt","w", encoding="utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt","w", encoding="utf-8") as didnt_find_output_file:
+	with open("chess-elo-item-rating-output.txt", "w", encoding = "utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt", "w", encoding = "utf-8") as didnt_find_output_file:
 # query wd, output in json
 		print("\nProcessing {}, going to check and possibly write claims with the date qualifier - year {}, month {}, and sourced as retrieved on - year {}, month {}, day {}.\n".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval))
 		print("10 seconds until start.\n")
@@ -38,7 +38,7 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 		wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
 		url = requests.get(wd_query_url)
 		json_data = json.loads(url.text)
-		item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/",""),data["value"]["value"]] for data in json_data["results"]["bindings"]]
+		item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/", ""), data["value"]["value"]] for data in json_data["results"]["bindings"]]
 # parse csv input
 		fide_rating_file = fide_csv_rating_file.read()
 		fide_rating_file = fide_rating_file.split("\n")
@@ -65,9 +65,9 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 			try:
 				if fide_id not in fide_ratings:
 					print(("Did not find fide id {} for item {}.\n").format(fide_id, wd_item))
-					didnt_find_output_file.write(("Item:{},FIDE ID:{}\n").format(wd_item,fide_id))
+					didnt_find_output_file.write(("Item:{}, FIDE ID:{}\n").format(wd_item,fide_id))
 					continue
-				rating = fide_ratings[fide_id]
+				rating = int(fide_ratings[fide_id])
 # write claims
 				print("Writing statement number: {}".format(claim_counter))
 				print("Setting P1087 claim to {}, value of {}.".format(wd_item,rating))
@@ -82,18 +82,18 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				stated_in_claim.setTarget(fide_web_item_page)
 				print("		Setting source - retrieved on year {}, month {}, day {}.".format(year_of_retrieval, month_of_retrieval, day_of_retrieval))
 				retrieved_on_claim.setTarget(retrieved_on_value)
-				print("		Setting source - fide id {}.".format(fide_id_property))
-				fide_id_claim.setTarget(fide_id_property)
+				print("		Setting source - fide id {}.".format(fide_id))
+				fide_id_claim.setTarget(fide_id)
 				elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
 				print("Writing to {} is done.\n".format(wd_item))
-				found_output_file.write("Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item,fide_id,rating))
+				found_output_file.write("Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
 				claim_counter += 1
 			except pywikibot.NoPage:
 				print(("{} does not exist. Skipping.\n").format(wd_item))
 				continue
 print(("Wrote {} claims.").format(claim_counter))
-end_time = round(int(time.time() - start_time),2)
-print("Script ran for {} seconds.".format(end_time))
+end_time = round(int(time.time() - start_time)/60, 2)
+print("Script ran for {} minutes.".format(end_time))
 winsound.Beep(2500,700)
 
 # jan		1
