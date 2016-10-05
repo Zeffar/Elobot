@@ -2,10 +2,10 @@ import pywikibot, re, json, urllib.parse, requests, time, winsound
 # intro, assign variables
 start_time = time.time()
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
-print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.")
+print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.\n")
 time.sleep(5)
 input_csv_file = input("Give the name of the input csv file, for ex \"standard_apr14.csv\": ") # for example standard_apr14.csv
-print("The following values must match the input csv file!")
+print("The following values must match the input csv file!\n")
 time.sleep(5)
 year_of_rating = int(input("Give the year of the rating, for ex \"2014\": "))
 month_of_rating = int(input("Give the month of the rating, for ex \"4\" for April: "))
@@ -93,7 +93,7 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				continue
 print(("Wrote {} claims.").format(claim_counter))
 end_time = round(int(time.time() - start_time),2)
-print("Scritp ran for {} seconds.".format(end_time))
+print("Script ran for {} seconds.".format(end_time))
 winsound.Beep(2500,700)
 
 # jan		1
