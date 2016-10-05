@@ -1,5 +1,6 @@
 import pywikibot, re, json, urllib.parse, requests, time, winsound
 # intro, assign variables
+start_time = time.time()
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.")
 time.sleep(5)
@@ -91,6 +92,8 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				print(("{} does not exist. Skipping.\n").format(wd_item))
 				continue
 print(("Wrote {} claims.").format(claim_counter))
+end_time = round(int(time.time() - start_time),2)
+print("Scritp ran for {} seconds.".format(end_time))
 winsound.Beep(2500,700)
 
 # jan		1
