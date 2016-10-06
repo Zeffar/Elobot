@@ -30,7 +30,7 @@ fide_id_claim = pywikibot.Claim(repository, fide_id_property)
 with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 	with open("chess-elo-item-rating-output.txt", "w", encoding = "utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt", "w", encoding = "utf-8") as didnt_find_output_file:
 # query wd, output in json
-		print("\nProcessing {}, going to check and possibly write claims with the date qualifier - year {}, month {}, and sourced as retrieved on - year {}, month {}, day {}.\n".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval))
+		print("\nProcessing {}, going to check and possibly write claims with these values:\n	qualifier: date (P585) - year {}, month {}\n	source:\n		retrieved (P813) - year {}, month {}, day {}\n		player's own fide id ({})\n		stated in ({}) - ratings.fide.com ({})".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval, fide_id_property, stated_in_property, fide_web_item))
 		print("10 seconds until start.\n")
 		time.sleep(10)
 		query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
@@ -90,29 +90,33 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				claim_counter += 1
 			except pywikibot.NoPage:
 				print(("{} does not exist. Skipping.\n").format(wd_item))
-				winsound.beep(2500,200)
+				winsound.Beep(2500,200)
 				time.sleep(5)
 				continue
 print(("Wrote {} claims.").format(claim_counter))
 end_time = round(int(time.time() - start_time)/60, 2)
 print("Script ran for {} minutes.".format(end_time))
-winsound.beep(2500,500)
+winsound.Beep(2500,500)
 
-# jan		1
-# feb		2
-# mar		3
-# apr		4
-# may		5
-# jun		6
-# jul		7
-# aug		8
-# sep		9
-# oct		10
-# nov		11
-# dec		12
-# property P813 "retrieved", to be found at https://www.wikidata.org/wiki/Property:P813
-# property P248 "stated in", to be found at https://www.wikidata.org/wiki/Property:P248
-# property P585 "date_property" to be found at https://www.wikidata.org/wiki/Property:P585
-# property P1087 "elo" to be found at https://www.wikidata.org/wiki/Property:1087
-# property P1440 "fide id", to be found at https://www.wikidata.org/wiki/Property:P1440
-# item "ratings.fide.com" to be found at https://www.wikidata.org/wiki/Q27038151
+# Calendar:
+#       jan		1
+#       feb		2
+#       mar		3
+#       apr		4
+#       may		5
+#       jun		6
+#       jul		7
+#       aug		8
+#       sep		9
+#       oct		10
+#       nov		11
+#       dec		12
+# Properties:
+#       property P813 "retrieved", to be found at https://www.wikidata.org/wiki/Property:P813
+#       property P248 "stated in", to be found at https://www.wikidata.org/wiki/Property:P248
+#       property P585 "date_property" to be found at https://www.wikidata.org/wiki/Property:P585
+#       property P1087 "elo" to be found at https://www.wikidata.org/wiki/Property:1087
+#       property P1440 "fide id", to be found at https://www.wikidata.org/wiki/Property:P1440
+#       item "ratings.fide.com" to be found at https://www.wikidata.org/wiki/Q27038151
+# Deleted items:
+#       Q11814034  - Dziubinski,id 1126385, https://ratings.fide.com/card.phtml?event=1126385
