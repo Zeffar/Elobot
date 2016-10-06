@@ -3,10 +3,10 @@ import pywikibot, re, json, urllib.parse, requests, time, winsound
 start_time = time.time()
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.\n")
-time.sleep(5)
+time.sleep(2)
 input_csv_file = input("Give the name of the input csv file: ") # for example "standard_apr14.csv"
 print("The following values must match the input csv file given above!\n")
-time.sleep(5)
+time.sleep(2)
 year_of_rating = int(input("Give the year of the rating: ")) # for ex "2014"
 month_of_rating = 8 # month_of_rating = int(input("Give the month of the rating: ")) # for ex "4" for April
 year_of_retrieval = 2016 # year_of_retrieval = int(input("Give the year of the retrieval, for ex \"2016\": "))
@@ -30,9 +30,8 @@ fide_id_claim = pywikibot.Claim(repository, fide_id_property)
 with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 	with open("chess-elo-item-rating-output.txt", "w", encoding = "utf-8") as  found_output_file, open("chess-didntfind-fideid-output.txt", "w", encoding = "utf-8") as didnt_find_output_file:
 # query wd, output in json
-		print("\nProcessing {}, going to check and possibly write claims with these values:\n	qualifier: date (P585) - year {}, month {}\n	source:\n		retrieved (P813) - year {}, month {}, day {}\n		player's own fide id ({})\n		stated in ({}) - ratings.fide.com ({})".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval, fide_id_property, stated_in_property, fide_web_item))
-		print("10 seconds until start.\n")
-		time.sleep(10)
+		print("\nInput file: {}\nEloBot is going to check and possibly write claims with these values:\n	qualifier: date (P585) - year {}, month {}\n	source:\n		retrieved (P813) - year {}, month {}, day {}\n		player's own fide id ({})\n		stated in ({}) - ratings.fide.com ({})".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval, fide_id_property, stated_in_property, fide_web_item))
+		input("\nIf the above statements are correct, press Enter to start.\n")
 		query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
 		wd_query = urllib.parse.quote(query_string)
 		wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
