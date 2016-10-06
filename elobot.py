@@ -96,7 +96,7 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 print(("Wrote {} claims.").format(claim_counter))
 end_time = round(int(time.time() - start_time)/60, 2)
 print("Script ran for {} minutes.".format(end_time))
-winsound.Beep(2500,700)
+winsound.Beep(2500,500)
 
 # jan		1
 # feb		2
