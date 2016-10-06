@@ -92,8 +92,8 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				winsound.Beep(2500,200)
 				time.sleep(5)
 				continue
-end_time = round(int(time.time() - start_time)/60, 2)
-print("EloBot ran for {} minutes and wrote {} claims.".format(end_time, claim_counter))
+total_runtime = round(int(time.time() - start_time)/60)
+print("EloBot ran for {} minutes and wrote {} claims.".format(total_runtime, claim_counter))
 winsound.Beep(2500,500)
 
 # Calendar:
