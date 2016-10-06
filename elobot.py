@@ -1,12 +1,12 @@
 import pywikibot, re, json, urllib.parse, requests, time, winsound
 # intro, assign variables
-start_time = time.Time()
+start_time = time.time()
 repository = pywikibot.Site("wikidata", "wikidata").data_repository()
 print("EloBot is a script for writing elo rating claims to wikidata - a collaboratively edited knowledge base operated by the Wikimedia Foundation.\n")
-time.Sleep(5)
+time.sleep(5)
 input_csv_file = input("Give the name of the input csv file: ") # for example "standard_apr14.csv"
 print("The following values must match the input csv file given above!\n")
-time.Sleep(5)
+time.sleep(5)
 year_of_rating = int(input("Give the year of the rating: ")) # for ex "2014"
 month_of_rating = 8 # month_of_rating = int(input("Give the month of the rating: ")) # for ex "4" for April
 year_of_retrieval = 2016 # year_of_retrieval = int(input("Give the year of the retrieval, for ex \"2016\": "))
@@ -32,7 +32,7 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 # query wd, output in json
 		print("\nProcessing {}, going to check and possibly write claims with the date qualifier - year {}, month {}, and sourced as retrieved on - year {}, month {}, day {}.\n".format(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval))
 		print("10 seconds until start.\n")
-		time.Sleep(10)
+		time.sleep(10)
 		query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
 		wd_query = urllib.parse.quote(query_string)
 		wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
@@ -90,13 +90,13 @@ with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file:
 				claim_counter += 1
 			except pywikibot.NoPage:
 				print(("{} does not exist. Skipping.\n").format(wd_item))
-				winsound.Beep(2500,200)
-				time.Sleep(5)
+				winsound.beep(2500,200)
+				time.sleep(5)
 				continue
 print(("Wrote {} claims.").format(claim_counter))
 end_time = round(int(time.time() - start_time)/60, 2)
 print("Script ran for {} minutes.".format(end_time))
-winsound.Beep(2500,500)
+winsound.beep(2500,500)
 
 # jan		1
 # feb		2
