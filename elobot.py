@@ -13,10 +13,10 @@ while repeat == "y":
     print("The following values must match the input csv file given above!\n")
     time.sleep(2)
     year_of_rating = int(input("Give the year of the rating: ")) # for ex "2014"
-    month_of_rating = 12 # month_of_rating = int(input("Give the month of the rating: ")) # for ex "4" for April
-    year_of_retrieval = 2016 # year_of_retrieval = int(input("Give the year of the retrieval, for ex \"2016\": "))
-    month_of_retrieval = 9 # month_of_retrieval = int(input("Give the month of the retrieval, for ex \"9\" for September: "))
-    day_of_retrieval = 21 # day_of_retrieval = int(input("Give the day of the retrieval, for ex \"21\": "))
+    month_of_rating = int(input("Give the month of the rating: ")) # for ex "4" for April
+    year_of_retrieval = int(input("Give the year of the retrieval: ")) # for ex "2016"
+    month_of_retrieval = int(input("Give the month of the retrieval: ")) # for ex "9"
+    day_of_retrieval = int(input("Give the day of the retrieval: ")) # for ex "21"
     date_property = "P585"
     date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
     date_claim = pywikibot.Claim(repo, date_property)
