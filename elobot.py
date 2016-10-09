@@ -1,14 +1,27 @@
-import pywikibot, re, json, urllib.parse, requests, time, winsound
-# intro, assign variables
+import pywikibot, re, json, urllib.parse, requests, time, winsound, os
+# global variables
 site = pywikibot.Site("wikidata", "wikidata")
 repo = site.data_repository()
-print("EloBot is a script for writing elo rating claims to Wikidata - a collaboratively edited knowledge base "
-      "operated by the Wikimedia Foundation.\n")
-time.sleep(2)
+date_property = "P585"
+date_claim = pywikibot.Claim(repo, date_property)
+stated_in_property = "P248"
+stated_in_claim = pywikibot.Claim(repo, stated_in_property)
+retrieved_on_property = "P813"
+retrieved_on_claim = pywikibot.Claim(repo, retrieved_on_property)
+fide_web_item = "Q27038151"
+fide_web_item_page = pywikibot.ItemPage(repo, fide_web_item)
+elo_property = "P1087"
+elo_claim = pywikibot.Claim(repo, elo_property)
+fide_id_property = "P1440"
+fide_id_claim = pywikibot.Claim(repo, fide_id_property)
 repeat = "y"
-while repeat == "y":
-    exception_counter = 0
-    start_time = time.time()
+clear = lambda: os.system('cls')
+exception_counter = 0
+claim_counter = 1
+start_time = time.time()
+# elobot function
+def elobot ():
+    global exception_counter , claim_counter
     input_csv_file = input("Give the name of the input csv file: ") # for example "standard_apr14.csv"
     print("The following values must match the input csv file given above!\n")
     time.sleep(2)
@@ -17,20 +30,8 @@ while repeat == "y":
     year_of_retrieval = int(input("Give the year of the retrieval: ")) # for ex "2016"
     month_of_retrieval = int(input("Give the month of the retrieval: ")) # for ex "9"
     day_of_retrieval = int(input("Give the day of the retrieval: ")) # for ex "21"
-    date_property = "P585"
     date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
-    date_claim = pywikibot.Claim(repo, date_property)
-    stated_in_property = "P248"
-    stated_in_claim = pywikibot.Claim(repo, stated_in_property)
-    retrieved_on_property = "P813"
     retrieved_on_value = pywikibot.WbTime(year = year_of_retrieval, month = month_of_retrieval, day = day_of_retrieval)
-    retrieved_on_claim = pywikibot.Claim(repo, retrieved_on_property)
-    fide_web_item = "Q27038151"
-    fide_web_item_page = pywikibot.ItemPage(repo, fide_web_item)
-    elo_property = "P1087"
-    elo_claim = pywikibot.Claim(repo, elo_property)
-    fide_id_property = "P1440"
-    fide_id_claim = pywikibot.Claim(repo, fide_id_property) 
 # open external files
     with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
          open("chess-elo-item-rating-output.txt", "w", encoding = "utf-8") as  found_output_file, \
@@ -59,7 +60,6 @@ while repeat == "y":
         fide_rating_file3 = [f.split(",") for f in fide_rating_file2]
         fide_ratings = {f[0]:f[1] for f in fide_rating_file3}
 # write to wd
-        claim_counter = 1
         for player in item_list:
             has_claim_with_this_date = False
             wd_item = player[0]
@@ -125,11 +125,19 @@ while repeat == "y":
                 exception_counter += 1
                 time.sleep(60)
                 continue
+# run elobot
+print("EloBot is a script for writing elo rating claims to Wikidata - a collaboratively edited knowledge base "
+      "operated by the Wikimedia Foundation.\n")
+time.sleep(2)
+while repeat == "y":
+    clear()
+    elobot()
     total_runtime = round(int(time.time() - start_time)/60)
     print("EloBot ran for {} minutes and wrote {} claims.".format(total_runtime, claim_counter))
     print("Total number of exceptions: {}".format(exception_counter))
     winsound.Beep(2500,500)
     repeat = input("Would you like to run EloBot again? Press \"y\" for repeating.")
+
 # Calendar:
 #    jan    1
 #    feb    2
