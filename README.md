@@ -6,4 +6,5 @@ Credits for major parts of the script go to [Edgars2007](https://www.wikidata.or
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO:
-* rewrite the querying part and csv parsing part
+* rewrite the querying part
+* rewrite the csv parsing part - it could take as input original xml instead of csv
