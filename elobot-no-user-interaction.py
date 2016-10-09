@@ -65,7 +65,6 @@ open("chess-didntfind-fideid-output.txt", "w", encoding = "utf-8") as didnt_find
             elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
             found_output_file.write("Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
         except pywikibot.NoPage:
-            time.sleep(30)
             continue
         except pywikibot.data.api.APIError:
             time.sleep(300)
