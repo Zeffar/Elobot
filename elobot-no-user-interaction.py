@@ -2,12 +2,10 @@ import pywikibot, re, json, urllib.parse, requests, time
 site = pywikibot.Site("wikidata", "wikidata")
 repo = site.data_repository()
 date_property = "P585"
-date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
 date_claim = pywikibot.Claim(repo, date_property)
 stated_in_property = "P248"
 stated_in_claim = pywikibot.Claim(repo, stated_in_property)
 retrieved_on_property = "P813"
-retrieved_on_value = pywikibot.WbTime(year = year_of_retrieval, month = month_of_retrieval, day = day_of_retrieval)
 retrieved_on_claim = pywikibot.Claim(repo, retrieved_on_property)
 fide_web_item = "Q27038151"
 fide_web_item_page = pywikibot.ItemPage(repo, fide_web_item)
@@ -19,6 +17,8 @@ def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, 
     with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
     open("chess-elo-item-rating-output.txt", "w", encoding = "utf-8") as  found_output_file, \
     open("chess-didntfind-fideid-output.txt", "w", encoding = "utf-8") as didnt_find_output_file:
+        date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
+        retrieved_on_value = pywikibot.WbTime(year = year_of_retrieval, month = month_of_retrieval, day = day_of_retrieval)
         query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
         wd_query = urllib.parse.quote(query_string)
         wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
@@ -68,5 +68,5 @@ def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, 
                 time.sleep(60)
                 continue
 
-# elobot(input_csv_file = "/data/project/elobot/csv/standard_jan13.csv", year_of_rating = 2013, month_of_rating = 1, 
-# year_of_retrieval = 2016, month_of_retrieval = 9, day_of_retrieval = 21)
+elobot(input_csv_file = "csv/standard_jan13.csv", year_of_rating = 2013, month_of_rating = 1, 
+year_of_retrieval = 2016, month_of_retrieval = 9, day_of_retrieval = 21) # example
