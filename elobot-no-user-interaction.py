@@ -31,7 +31,6 @@ def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, 
         fide_rating_file2 = [f for f in fide_rating_file if len(f)>0]
         fide_rating_file3 = [f.split(",") for f in fide_rating_file2]
         fide_ratings = {f[0]:f[1] for f in fide_rating_file3}
-        claim_counter = 1
         for player in item_list:
             has_claim_with_this_date = False
             wd_item = player[0]
