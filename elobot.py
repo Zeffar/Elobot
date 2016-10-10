@@ -9,6 +9,7 @@ import os
 
 site = pywikibot.Site("wikidata", "wikidata")
 repo = site.data_repository()
+
 date_property = "P585"
 date_claim = pywikibot.Claim(repo, date_property)
 stated_in_property = "P248"
@@ -21,12 +22,16 @@ elo_property = "P1087"
 elo_claim = pywikibot.Claim(repo, elo_property)
 fide_id_property = "P1440"
 fide_id_claim = pywikibot.Claim(repo, fide_id_property)
-clear = lambda: os.system('cls')
 repeat = "y"
 exception_counter = 0
 claim_counter = 1
 start_time = time.time()
-# elobot function
+
+
+def clear():
+    os.system('cls')
+
+
 def elobot():
     global exception_counter, claim_counter
     input_csv_file = input("Give the name of the input csv file: ")  # for example "standard_apr14.csv"
@@ -46,7 +51,7 @@ def elobot():
         year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
 # open external files
     with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
-            open("chess-elo-item-rating-output.txt", "w", encoding="utf-8") as  found_output_file, \
+            open("chess-elo-item-rating-output.txt", "w", encoding="utf-8") as found_output_file, \
             open("chess-didntfind-fideid-output.txt", "w", encoding="utf-8") as didnt_find_output_file:
         # query wd, output in json
         print("\nInput file: {}\nEloBot is going to check and possibly write claims with these values:"
@@ -85,7 +90,7 @@ def elobot():
                         if qualifier.target_equals(date_value):
                             has_claim_with_this_date = True
                             print("Checking elo claim of the item {}."
-                                  "\nThis claim HAS a qualifier date - year {}, month {}.\n".format(wd_item, year_of_rating, 
+                                  "\nThis claim HAS a qualifier date - year {}, month {}.\n".format(wd_item, year_of_rating,
                                                                                                     month_of_rating))
                             break
                 if has_claim_with_this_date:
@@ -133,15 +138,13 @@ def elobot():
                 time.sleep(5)
                 continue
             except pywikibot.data.api.APIError:
-                print(
-                    "Wikidata is probably in readonly mode. Waiting 5 minutes before continuing.")
+                print("Wikidata is probably in readonly mode. Waiting 5 minutes before continuing.")
                 winsound.Beep(2500, 200)
                 exception_counter += 1
                 time.sleep(300)
                 continue
             except:
-                print(
-                    "Unspecified exception caught. Waiting 60 seconds before continuing.")
+                print("Unspecified exception caught. Waiting 60 seconds before continuing.")
                 winsound.Beep(2500, 200)
                 exception_counter += 1
                 time.sleep(60)
@@ -151,15 +154,14 @@ print("EloBot is a script for writing elo rating claims to Wikidata - a collabor
       "operated by the Wikimedia Foundation.\n")
 time.sleep(2)
 while repeat == "y":
-    clear()
     elobot()
     total_runtime = round(int(time.time() - start_time) / 60)
     print("EloBot ran for {} minutes and wrote {} claims.".format(
         total_runtime, claim_counter))
     print("Total number of exceptions: {}".format(exception_counter))
     winsound.Beep(2500, 500)
-    repeat = input(
-        "Would you like to run EloBot again? Press \"y\" for repeating.")
+    repeat = input("Would you like to run EloBot again? Press \"y\" for repeating.")
+    clear()
 
 # Calendar:
 #    jan    1
