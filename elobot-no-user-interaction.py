@@ -1,4 +1,9 @@
-import pywikibot, re, json, urllib.parse, requests, time
+import pywikibot
+import re
+import json
+import urllib.parse
+import requests
+import time
 site = pywikibot.Site("wikidata", "wikidata")
 repo = site.data_repository()
 date_property = "P585"
@@ -13,24 +18,29 @@ elo_property = "P1087"
 elo_claim = pywikibot.Claim(repo, elo_property)
 fide_id_property = "P1440"
 fide_id_claim = pywikibot.Claim(repo, fide_id_property)
-def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval):
+
+
+def elobot(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval):
     with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
-    open("chess-elo-item-rating-output.txt", "w", encoding = "utf-8") as  found_output_file, \
-    open("chess-didntfind-fideid-output.txt", "w", encoding = "utf-8") as didnt_find_output_file:
-        date_value = pywikibot.WbTime(year = year_of_rating, month = month_of_rating)
-        retrieved_on_value = pywikibot.WbTime(year = year_of_retrieval, month = month_of_retrieval, day = day_of_retrieval)
+            open("chess-elo-item-rating-output.txt", "w", encoding="utf-8") as  found_output_file, \
+            open("chess-didntfind-fideid-output.txt", "w", encoding="utf-8") as didnt_find_output_file:
+        date_value = pywikibot.WbTime(
+            year=year_of_rating, month=month_of_rating)
+        retrieved_on_value = pywikibot.WbTime(
+            year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
         query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
         wd_query = urllib.parse.quote(query_string)
-        wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
+        wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(
+            wd_query)
         url = requests.get(wd_query_url)
         json_data = json.loads(url.text)
         item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/", ""),
-                    data["value"]["value"]] for data in json_data["results"]["bindings"]]
+                      data["value"]["value"]] for data in json_data["results"]["bindings"]]
         fide_rating_file = fide_csv_rating_file.read()
         fide_rating_file = fide_rating_file.split("\n")
-        fide_rating_file2 = [f for f in fide_rating_file if len(f)>0]
+        fide_rating_file2 = [f for f in fide_rating_file if len(f) > 0]
         fide_rating_file3 = [f.split(",") for f in fide_rating_file2]
-        fide_ratings = {f[0]:f[1] for f in fide_rating_file3}
+        fide_ratings = {f[0]: f[1] for f in fide_rating_file3}
         for player in item_list:
             has_claim_with_this_date = False
             wd_item = player[0]
@@ -40,13 +50,14 @@ def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, 
                 player_item.get()
                 for claim in player_item.claims.get(elo_property, []):
                     for qualifier in claim.qualifiers.get(date_property, []):
-                            if qualifier.target_equals(date_value):
-                                has_claim_with_this_date = True
-                                break
+                        if qualifier.target_equals(date_value):
+                            has_claim_with_this_date = True
+                            break
                 if has_claim_with_this_date:
                     continue
                 if fide_id not in fide_ratings:
-                    didnt_find_output_file.write(("Item:{}, FIDE ID:{}\n").format(wd_item,fide_id))
+                    didnt_find_output_file.write(
+                        ("Item:{}, FIDE ID:{}\n").format(wd_item, fide_id))
                     continue
                 rating = int(fide_ratings[fide_id])
                 elo_claim.setTarget(pywikibot.WbQuantity(rating))
@@ -56,8 +67,10 @@ def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, 
                 stated_in_claim.setTarget(fide_web_item_page)
                 retrieved_on_claim.setTarget(retrieved_on_value)
                 fide_id_claim.setTarget(fide_id)
-                elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
-                found_output_file.write("Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
+                elo_claim.addSources(
+                    [stated_in_claim, retrieved_on_claim, fide_id_claim])
+                found_output_file.write(
+                    "Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
             except pywikibot.NoPage:
                 continue
             except pywikibot.data.api.APIError:
@@ -66,6 +79,5 @@ def elobot (input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, 
             except:
                 time.sleep(60)
                 continue
-
 elobot(input_csv_file = "csv/standard_jan13.csv", year_of_rating = 2013, month_of_rating = 1, 
 year_of_retrieval = 2016, month_of_retrieval = 9, day_of_retrieval = 21) # example
