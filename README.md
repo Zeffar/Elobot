@@ -7,4 +7,4 @@ Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO:
 * rewrite the querying part
-* rewrite the csv parsing part - it could take as input original xml instead of csv
+* rewrite the csv parsing part - it should take as input original xml instead of csv - ongoing work at snippet [parse_xml.py](https://github.com/Wesalius/snippets/blob/master/parse_xml.py)
