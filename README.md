@@ -6,5 +6,5 @@ Credits for major parts of the script go to [Edgars2007](https://www.wikidata.or
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ##TODO:
-* rewrite the querying part
+* rewrite the querying part -  see "wd_sparql_generator" function at [Edoredoos script](https://www.wikidata.org/wiki/User:Edoderoobot/en-nl-label-fixer)
 * rewrite the csv parsing part - it should take as input original xml instead of csv - ongoing work at snippet [parse_xml.py](https://github.com/Wesalius/snippets/blob/master/parse_xml.py)
