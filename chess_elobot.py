@@ -37,15 +37,11 @@ def elobot():
     input_csv_file = input("Give the name of the input csv file: ")  # for example "standard_apr14.csv"
     print("The following values must match the input csv file given above!\n")
     time.sleep(2)
-    year_of_rating = int(
-        input("Give the year of the rating: "))  # for ex "2014"
+    year_of_rating = int(input("Give the year of the rating: "))  # for ex "2014"
     month_of_rating = int(input("Give the month of the rating: "))  # for ex "4" for April
-    year_of_retrieval = int(
-        input("Give the year of the retrieval: "))  # for ex "2016"
-    month_of_retrieval = int(
-        input("Give the month of the retrieval: "))  # for ex "9"
-    day_of_retrieval = int(
-        input("Give the day of the retrieval: "))  # for ex "21"
+    year_of_retrieval = int(input("Give the year of the retrieval: "))  # for ex "2016"
+    month_of_retrieval = int(input("Give the month of the retrieval: "))  # for ex "9"
+    day_of_retrieval = int(input("Give the day of the retrieval: "))  # for ex "21"
     date_value = pwb.WbTime(year=year_of_rating, month=month_of_rating)
     retrieved_on_value = pwb.WbTime(
         year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
@@ -104,8 +100,7 @@ def elobot():
                 if fide_id not in fide_ratings:
                     print("FIDE ID {} for item {} returned by the query was NOT found in the input file.\n".format(
                         fide_id, wd_item))
-                    didnt_find_output_file.write(
-                        "Item:{}, FIDE ID:{}\n".format(wd_item, fide_id))
+                    didnt_find_output_file.write("Item:{}, FIDE ID:{}\n".format(wd_item, fide_id))
                     continue
                 rating = int(fide_ratings[fide_id])
                 # write claims
@@ -115,8 +110,7 @@ def elobot():
                 elo_claim.setTarget(pwb.WbQuantity(rating))
                 player_item.addClaim(elo_claim)
                 # write qualifier - date
-                print(
-                    "    Setting qualifier - date: year {}, month {}.".format(year_of_rating, month_of_rating))
+                print("    Setting qualifier - date: year {}, month {}.".format(year_of_rating, month_of_rating))
                 date_claim.setTarget(date_value)
                 elo_claim.addQualifier(date_claim)
                 # write sources - stated in + date_prop of the retrieval and FIDE ID
