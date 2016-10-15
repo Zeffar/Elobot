@@ -24,15 +24,12 @@ fide_id_claim = pwb.Claim(repo, fide_id_property)
 def elobot(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, month_of_retrieval, day_of_retrieval):
     with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
             open("chess-elo-item-rating-output.txt", "w", encoding="utf-8") as found_output_file, \
-            open("chess-didntfind-fideid-output.txt", "w", encoding="utf-8") as didnt_find_output_file:
-        date_value = pwb.WbTime(
-            year=year_of_rating, month=month_of_rating)
-        retrieved_on_value = pwb.WbTime(
-            year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
+            open("chess-didnt-find-fideid-output.txt", "w", encoding="utf-8") as didnt_find_output_file:
+        date_value = pwb.WbTime(year=year_of_rating, month=month_of_rating)
+        retrieved_on_value = pwb.WbTime(year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
         query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
         wd_query = urllib.parse.quote(query_string)
-        wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(
-            wd_query)
+        wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(wd_query)
         url = requests.get(wd_query_url)
         json_data = json.loads(url.text)
         item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/", ""),
@@ -57,8 +54,7 @@ def elobot(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, m
                 if has_claim_with_this_date:
                     continue
                 if fide_id not in fide_ratings:
-                    didnt_find_output_file.write(
-                        "Item:{}, FIDE ID:{}\n".format(wd_item, fide_id))
+                    didnt_find_output_file.write("Item:{}, FIDE ID:{}\n".format(wd_item, fide_id))
                     continue
                 rating = int(fide_ratings[fide_id])
                 elo_claim.setTarget(pwb.WbQuantity(rating))
@@ -68,10 +64,8 @@ def elobot(input_csv_file, year_of_rating, month_of_rating, year_of_retrieval, m
                 stated_in_claim.setTarget(fide_web_item_page)
                 retrieved_on_claim.setTarget(retrieved_on_value)
                 fide_id_claim.setTarget(fide_id)
-                elo_claim.addSources(
-                    [stated_in_claim, retrieved_on_claim, fide_id_claim])
-                found_output_file.write(
-                    "Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
+                elo_claim.addSources([stated_in_claim, retrieved_on_claim, fide_id_claim])
+                found_output_file.write("Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
             except pwb.NoPage:
                 continue
             except pwb.data.api.APIError:
