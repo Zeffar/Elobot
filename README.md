@@ -8,5 +8,5 @@ Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 ## TODO:
 * rewrite the querying part - see "wd_sparql_generator" function at [Edoredoo's script](https://www.wikidata.org/wiki/User:Edoderoobot/en-nl-label-fixer)
 * rewrite the csv parsing part - it should take as input original xml instead of csv - ongoing work at snippet [parse_xml.py](https://github.com/Wesalius/snippets/blob/master/parse_xml.py)
-* split elobot function into smaller functions
+* split elobot function into smaller functions - especially the querying part so the runs on different months (files) do inherit the query results
 * add proper logging of actions
