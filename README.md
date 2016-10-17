@@ -6,7 +6,11 @@ Credits for major parts of the script go to [Edgars2007](https://www.wikidata.or
 Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 ## TODO:
-* rewrite the querying part - see "wd_sparql_generator" function at [Edoredoo's script](https://www.wikidata.org/wiki/User:Edoderoobot/en-nl-label-fixer)
-* rewrite the csv parsing part - it should take as input original xml instead of csv - ongoing work at snippet [parse_xml.py](https://github.com/Wesalius/snippets/blob/master/parse_xml.py)
-* split elobot function into smaller functions - especially the querying part so the runs on different months (files) do inherit the query results
+* rewrite the querying part
+  *see "wd_sparql_generator" function at [Edoredoo's script](https://www.wikidata.org/wiki/User:Edoderoobot/en-nl-label-fixer)
+* rewrite the csv parsing part
+  * elobot should take as input original xml instead of csv as in [parse_xml.py](https://github.com/Wesalius/snippets/blob/master/parse_xml.py) snippet
+  * elobot should create the dict stratight with csv standard library as in [dict_from_csv.py](https://github.com/Wesalius/snippets/blob/master/dict_from_csv.py) snippet
+* split elobot function into smaller functions
+  * especially the querying part so the runs on different months (files) do inherit the query results
 * add proper logging of actions
