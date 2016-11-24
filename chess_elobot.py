@@ -2,7 +2,6 @@ import json
 import os
 import time
 import urllib.parse
-import winsound
 
 import pywikibot as pwb
 import requests
@@ -52,12 +51,12 @@ def elobot():
         # query wd, output in json
         print("\nInput file: {}\nEloBot is going to check and possibly write claims with these values:"
               "\n    qualifier: date (P585) - year {}, month {}"
-              "\n    source:\n        retrieved (P813) - year {}, month {}, day {}"
+              "\n    source:\n        retrieved ({}) - year {}, month {}, day {}"
               "\n        player's own FIDE ID ({})"
               "\n        stated in ({}) - ratings.fide.com ({})".format(input_csv_file, year_of_rating,
-                                                                        month_of_rating, year_of_retrieval,
-                                                                        month_of_retrieval, day_of_retrieval,
-                                                                        fide_id_prop,
+                                                                        month_of_rating, retrieved_on_prop,
+                                                                        year_of_retrieval, month_of_retrieval,
+                                                                        day_of_retrieval, fide_id_prop,
                                                                         stated_in_prop, fide_web_item))
         input("\nIf the above statements are correct, press Enter to start.\n")
         query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
@@ -130,19 +129,16 @@ def elobot():
                 claim_counter += 1
             except pwb.NoPage:
                 print("{} does not exist. Skipping.\n".format(wd_item))
-                winsound.Beep(2500, 200)
                 exception_counter += 1
                 time.sleep(5)
                 continue
             except pwb.data.api.APIError:
                 print("APIError occurred. Wikidata might be in readonly mode. Waiting 5 minutes.")
-                winsound.Beep(2500, 200)
                 exception_counter += 1
                 time.sleep(300)
                 continue
             except:
                 print("Unspecified exception raised. Waiting 1 minute.")
-                winsound.Beep(2500, 200)
                 exception_counter += 1
                 time.sleep(60)
                 continue
