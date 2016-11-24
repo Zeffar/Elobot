@@ -154,7 +154,6 @@ while repeat == "y":
     print("EloBot ran for {} minutes and wrote {} claims.".format(
         total_runtime, claim_counter))
     print("Total number of exceptions: {}".format(exception_counter))
-    winsound.Beep(2500, 500)
     repeat = input("Would you like to run EloBot again? Press \"y\" for repeating.")
     clear_console()
 
