@@ -41,107 +41,110 @@ def elobot():
     year_of_retrieval = int(input("Give the year of the retrieval: "))  # for ex "2016"
     month_of_retrieval = int(input("Give the month of the retrieval: "))  # for ex "9"
     day_of_retrieval = int(input("Give the day of the retrieval: "))  # for ex "21"
-    date_value = pwb.WbTime(year=year_of_rating, month=month_of_rating)
-    retrieved_on_value = pwb.WbTime(
-        year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
-    # open external files
-    with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
-            open("chess-elo-item-rating-output.txt", "w", encoding="utf-8") as found_output_file, \
-            open("chess-didntfind-fideid-output.txt", "w", encoding="utf-8") as didnt_find_output_file:
-        # query wd, output in json
-        print("\nInput file: {}\nEloBot is going to check and possibly write claims with these values:"
-              "\n    qualifier: date (P585) - year {}, month {}"
-              "\n    source:\n        retrieved ({}) - year {}, month {}, day {}"
-              "\n        player's own FIDE ID ({})"
-              "\n        stated in ({}) - ratings.fide.com ({})".format(input_csv_file, year_of_rating,
-                                                                        month_of_rating, retrieved_on_prop,
-                                                                        year_of_retrieval, month_of_retrieval,
-                                                                        day_of_retrieval, fide_id_prop,
-                                                                        stated_in_prop, fide_web_item))
-        input("\nIf the above statements are correct, press Enter to start.\n")
-        query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
-        wd_query = urllib.parse.quote(query_string)
-        wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(
-            wd_query)
-        url = requests.get(wd_query_url)
-        json_data = json.loads(url.text)
-        item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/", ""),
-                      data["value"]["value"]] for data in json_data["results"]["bindings"]]
-        # parse csv input
-        fide_rating_file = fide_csv_rating_file.read()
-        fide_rating_file = fide_rating_file.split("\n")
-        fide_rating_file2 = [f for f in fide_rating_file if len(f) > 0]
-        fide_rating_file3 = [f.split(",") for f in fide_rating_file2]
-        fide_ratings = {f[0]: f[1] for f in fide_rating_file3}
-        # write to wd
-        for player in item_list:
-            has_claim_with_this_date = False
-            wd_item = player[0]
-            fide_id = player[1]
-            player_item = pwb.ItemPage(repo, wd_item)
-            try:
-                player_item.get()
-                for claim in player_item.claims.get(elo_prop, []):
-                    for qualifier in claim.qualifiers.get(date_prop, []):
-                        if qualifier.target_equals(date_value):
-                            has_claim_with_this_date = True
-                            print("Checking elo claim of the item {}."
-                                  "\nThis claim HAS a qualifier date - year {}, month {}.\n".format(wd_item,
-                                                                                                    year_of_rating,
-                                                                                                    month_of_rating))
-                            break
-                if has_claim_with_this_date:
-                    print("Checking elo claim of the item {}."
-                          "\nThis claim does NOT have a qualifier date - year {}, month {}.\n".format(wd_item,
-                                                                                                      year_of_rating,
-                                                                                                      month_of_rating))
+    while 1971 <= year_of_rating <= 2020 and 2016 <= year_of_retrieval <= 2020 and 1 <= month_of_rating <= 12 and\
+                            1 <= month_of_retrieval <= 12 and 1 <= day_of_retrieval <= 31:
+        date_value = pwb.WbTime(year=year_of_rating, month=month_of_rating)
+        retrieved_on_value = pwb.WbTime(year=year_of_retrieval, month=month_of_retrieval, day=day_of_retrieval)
+        # open external files
+        with open(input_csv_file, "r", encoding="utf-8") as fide_csv_rating_file, \
+                open("chess-elo-item-rating-output.txt", "w", encoding="utf-8") as found_output_file, \
+                open("chess-didntfind-fideid-output.txt", "w", encoding="utf-8") as didnt_find_output_file:
+            # query wd, output in json
+            print("\nInput file: {}\nEloBot is going to check and possibly write claims with these values:"
+                  "\n    qualifier: date ({}) - year {}, month {}"
+                  "\n    source:\n        retrieved ({}) - year {}, month {}, day {}"
+                  "\n        player's own FIDE ID ({})"
+                  "\n        stated in ({}) - ratings.fide.com ({})".format(input_csv_file, date_prop, year_of_rating,
+                                                                            month_of_rating, retrieved_on_prop,
+                                                                            year_of_retrieval, month_of_retrieval,
+                                                                            day_of_retrieval, fide_id_prop,
+                                                                            stated_in_prop, fide_web_item))
+            input("\nIf the above statements are correct, press Enter to start.\n")
+            query_string = """SELECT ?item ?value WHERE {?item wdt:P1440 ?value .}"""
+            wd_query = urllib.parse.quote(query_string)
+            wd_query_url = "https://query.wikidata.org/bigdata/namespace/wdq/sparql?query={}&format=json".format(
+                wd_query)
+            url = requests.get(wd_query_url)
+            json_data = json.loads(url.text)
+            item_list = [[data["item"]["value"].replace("http://www.wikidata.org/entity/", ""),
+                          data["value"]["value"]] for data in json_data["results"]["bindings"]]
+            # parse csv input
+            fide_rating_file = fide_csv_rating_file.read()
+            fide_rating_file = fide_rating_file.split("\n")
+            fide_rating_file2 = [f for f in fide_rating_file if len(f) > 0]
+            fide_rating_file3 = [f.split(",") for f in fide_rating_file2]
+            fide_ratings = {f[0]: f[1] for f in fide_rating_file3}
+            # write to wd
+            for player in item_list:
+                has_claim_with_this_date = False
+                wd_item = player[0]
+                fide_id = player[1]
+                player_item = pwb.ItemPage(repo, wd_item)
+                try:
+                    player_item.get()
+                    for claim in player_item.claims.get(elo_prop, []):
+                        for qualifier in claim.qualifiers.get(date_prop, []):
+                            if qualifier.target_equals(date_value):
+                                has_claim_with_this_date = True
+                                print("Checking elo claim of the item {}."
+                                      "\nThis claim HAS a qualifier date - year {}, month {}.\n".format(wd_item,
+                                                                                                        year_of_rating,
+                                                                                                        month_of_rating))
+                                break
+                    if has_claim_with_this_date:
+                        print("Checking elo claim of the item {}."
+                              "\nThis claim does NOT have a qualifier date - year {}, month {}.\n".format(wd_item,
+                                                                                                          year_of_rating,
+                                                                                                          month_of_rating))
+                        continue
+                    if fide_id not in fide_ratings:
+                        print("FIDE ID {} for item {} returned by the query was NOT found in the input file.\n".format(
+                            fide_id, wd_item))
+                        didnt_find_output_file.write("Item:{}, FIDE ID:{}\n".format(wd_item, fide_id))
+                        continue
+                    rating = int(fide_ratings[fide_id])
+                    # write claims
+                    print("Writing statement number: {}".format(claim_counter))
+                    print("Setting P1087 claim to {}, value of {}.".format(
+                        wd_item, rating))
+                    elo_claim.setTarget(pwb.WbQuantity(rating))
+                    player_item.addClaim(elo_claim)
+                    # write qualifier - date
+                    print("    Setting qualifier - date: year {}, month {}.".format(year_of_rating, month_of_rating))
+                    date_claim.setTarget(date_value)
+                    elo_claim.addQualifier(date_claim)
+                    # write sources - stated in + date_prop of the retrieval and FIDE ID
+                    print("        Setting source - stated in {}.".format(fide_web_item))
+                    stated_in_claim.setTarget(fide_web_item_page)
+                    print("        Setting source - retrieved on year {}, month {}, day {}.".format(year_of_retrieval,
+                                                                                                    month_of_retrieval,
+                                                                                                    day_of_retrieval))
+                    retrieved_on_claim.setTarget(retrieved_on_value)
+                    print("        Setting source - FIDE ID {}.".format(fide_id))
+                    fide_id_claim.setTarget(fide_id)
+                    elo_claim.addSources(
+                        [stated_in_claim, retrieved_on_claim, fide_id_claim])
+                    print("Writing to {} is done.\n".format(wd_item))
+                    found_output_file.write(
+                        "Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
+                    claim_counter += 1
+                except pwb.NoPage:
+                    print("{} does not exist. Skipping.\n".format(wd_item))
+                    exception_counter += 1
+                    time.sleep(5)
                     continue
-                if fide_id not in fide_ratings:
-                    print("FIDE ID {} for item {} returned by the query was NOT found in the input file.\n".format(
-                        fide_id, wd_item))
-                    didnt_find_output_file.write("Item:{}, FIDE ID:{}\n".format(wd_item, fide_id))
+                except pwb.data.api.APIError:
+                    print("APIError occurred. Wikidata might be in readonly mode. Waiting 5 minutes.")
+                    exception_counter += 1
+                    time.sleep(300)
                     continue
-                rating = int(fide_ratings[fide_id])
-                # write claims
-                print("Writing statement number: {}".format(claim_counter))
-                print("Setting P1087 claim to {}, value of {}.".format(
-                    wd_item, rating))
-                elo_claim.setTarget(pwb.WbQuantity(rating))
-                player_item.addClaim(elo_claim)
-                # write qualifier - date
-                print("    Setting qualifier - date: year {}, month {}.".format(year_of_rating, month_of_rating))
-                date_claim.setTarget(date_value)
-                elo_claim.addQualifier(date_claim)
-                # write sources - stated in + date_prop of the retrieval and FIDE ID
-                print("        Setting source - stated in {}.".format(fide_web_item))
-                stated_in_claim.setTarget(fide_web_item_page)
-                print("        Setting source - retrieved on year {}, month {}, day {}.".format(year_of_retrieval,
-                                                                                                month_of_retrieval,
-                                                                                                day_of_retrieval))
-                retrieved_on_claim.setTarget(retrieved_on_value)
-                print("        Setting source - FIDE ID {}.".format(fide_id))
-                fide_id_claim.setTarget(fide_id)
-                elo_claim.addSources(
-                    [stated_in_claim, retrieved_on_claim, fide_id_claim])
-                print("Writing to {} is done.\n".format(wd_item))
-                found_output_file.write(
-                    "Item: {}, FIDE ID: {}, Rating: {}.\n".format(wd_item, fide_id, rating))
-                claim_counter += 1
-            except pwb.NoPage:
-                print("{} does not exist. Skipping.\n".format(wd_item))
-                exception_counter += 1
-                time.sleep(5)
-                continue
-            except pwb.data.api.APIError:
-                print("APIError occurred. Wikidata might be in readonly mode. Waiting 5 minutes.")
-                exception_counter += 1
-                time.sleep(300)
-                continue
-            except:
-                print("Unspecified exception raised. Waiting 1 minute.")
-                exception_counter += 1
-                time.sleep(60)
-                continue
+                except:
+                    print("Unspecified exception raised. Waiting 1 minute.")
+                    exception_counter += 1
+                    time.sleep(60)
+                    continue
+    else:
+        print("\nYou've got the dates wrong.\n")
 
 
 # run elobot
