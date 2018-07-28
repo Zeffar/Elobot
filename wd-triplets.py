@@ -4,8 +4,8 @@ import requests
 import pywikibot
 
 REPOSITORY = pywikibot.Site("wikidata", "wikidata").data_repository()
-FILE = open("elo-item-rating-triplet.txt", "w", encoding="utf-8")
-NOT_FOUND = open("item-fide-id-match-not-found.txt", "w", encoding="utf-8")
+FILE = open("elo-item-rating-triplet.csv", "w", encoding="utf-8")
+NOT_FOUND = open("item-fide-id-match-not-found.csv", "w", encoding="utf-8")
 QUERY_STRING = """SELECT ?item ?value
 WHERE
 {
@@ -25,7 +25,7 @@ FIDE_RATING_FILE3 = [f.split(",") for f in FIDE_RATING_FILE2]
 FIDE_RATINGS = {f[0]:f[1] for f in FIDE_RATING_FILE3}
 
 print("Script matches wikidata player items and FIDE IDs.")
-print("Writes the output to: elo-item-rating-triplet.txt and item-fide-id-match-not-found.txt.")
+print("Writes the output to: elo-item-rating-triplet.csv and item-fide-id-match-not-found.csv.")
 FILE.write("qid,P1087,qal585,S813,S854,S1440\n")
 
 for player in ITEM_LIST:
