@@ -35,7 +35,7 @@ for player in ITEM_LIST:
         NOT_FOUND.write("These players were not matched.\nItem:{}, FIDE ID:{}\n".format(WD_ITEM, FIDE_ID))
         continue
     RATING = FIDE_RATINGS[FIDE_ID]
-    FILE.write("{},{},+2018-06-01T00:00:00Z/10,+2018-07-28T00:00:00Z/11,Q27038151,{}\n".format(WD_ITEM, RATING, FIDE_ID))
+    FILE.write("{},{},+2018-06-01T00:00:00Z/10,+2018-07-28T00:00:00Z/11,\"\"\"\"https://ratings.fide.com/download.phtml\",\"\"\"\"{}\"\n".format(WD_ITEM, RATING, FIDE_ID))
 print("Done.")
 
 # property P1087 "elo" to be found at https://www.wikidata.org/wiki/Property:1087
