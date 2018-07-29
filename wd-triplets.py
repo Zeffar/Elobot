@@ -35,7 +35,7 @@ for player in ITEM_LIST:
         NOT_FOUND.write("These players were not matched.\nItem:{}, FIDE ID:{}\n".format(WD_ITEM, FIDE_ID))
         continue
     RATING = FIDE_RATINGS[FIDE_ID]
-    FILE.write("{},{},+2018-06-01T00:00:00Z,+2018-07-28T00:00:00Z,Q27038151,{}\n".format(WD_ITEM, RATING, FIDE_ID))
+    FILE.write("{},{},+2018-06-01T00:00:00Z/10,+2018-07-28T00:00:00Z/11,Q27038151,{}\n".format(WD_ITEM, RATING, FIDE_ID))
 print("Done.")
 
 # property P1087 "elo" to be found at https://www.wikidata.org/wiki/Property:1087
@@ -48,3 +48,5 @@ print("Done.")
 # statement structure:
 # P1087(elo) has a qualifier P585 (date) which is referenced by P813 (retrieved) with
 # value of date, P854 (URL) with value of Q27038151 and P1440 (fide id)
+# +2018-06-01T00:00:00Z/10 for July 2018 elo rating, more at https://www.wikidata.org/wiki/Help:QuickStatements
+# +2018-07-28T00:00:00Z/11 for claiming that rating was retrieved on 28/7/2018
