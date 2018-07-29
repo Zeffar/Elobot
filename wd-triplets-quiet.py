@@ -35,5 +35,5 @@ for player in ITEM_LIST:
     RATING = FIDE_RATINGS[FIDE_ID]
     FILE.write("{},{},+2018-06-01T00:00:00Z/10,+2018-07-28T00:00:00Z/11,Q27038151,{}\n".format(WD_ITEM, RATING, FIDE_ID))
 
-# +2018-06-01T00:00:00Z/10 for July 2018 elo rating, more at https://www.wikidata.org/wiki/Help:QuickStatements
+# +2018-06-01T00:00:00Z/10 for June 2018 elo rating, more at https://www.wikidata.org/wiki/Help:QuickStatements
 # +2018-07-28T00:00:00Z/11 for claiming that rating was retrieved on 28/7/2018
