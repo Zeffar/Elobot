@@ -5,7 +5,14 @@ Script uses [pywikibot](https://github.com/wikimedia/pywikibot-core) library.
 
 It outputs batch prepared for [QuickStatements](https://tools.wmflabs.org/quickstatements/).
 
+## Dependencies
+* xmlstarlet
+* python3
+* python module requests
+* wget
+* unzip
+* paste
+
 ## Todo
 * test with QuickStatements
-* combine steps in Prepdata/script.txt and wd-triplets.py into one shellscript
-* the dates are now hardcoded inside wd-triplets.py, ideally the script would be given a date (ex. 5/2018) and it would reuse it throughout the whole code
+* wd-triplets.py could generate date of elo and date retrieved according to argument of elofetch.sh

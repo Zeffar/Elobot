@@ -1,6 +1,0 @@
-wget http://ratings.fide.com/download/standard_jul18frl_xml.zip
-unzip http://ratings.fide.com/download/standard_jul18frl_xml.zip
-rm standard_jul18frl_xml.zip
-xmlstarlet sel -t -m "//fideid" -v . -n standard_jul18frl_xml.xml > ids.txt
-xmlstarlet sel -t -m "//rating" -v . -n standard_jul18frl_xml.xml > ratings.txt
-paste -d , ids.txt ratings.txt > pairs.csv
